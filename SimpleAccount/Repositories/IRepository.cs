@@ -6,12 +6,12 @@ namespace SimpleAccount.Repositories
 {
     public interface IRepository<T>
     {
-        Consent Get(string consentId);
+        T Get(string id);
 
-        void Add(Consent consent);
+        void Add(T item);
 
-        void Delete(string consentId);
+        void Delete(string id);
 
-        void Update(Consent consent);
+        void Update(T item);
     }
 }
