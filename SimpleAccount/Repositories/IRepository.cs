@@ -4,14 +4,14 @@ using SimpleAccount.Domains;
 
 namespace SimpleAccount.Repositories
 {
-    public interface IRepository<T>
+    public interface IRepository<Object, Identifier>
     {
-        T Get(string id);
+        Object Get(Identifier id);
 
-        void Add(T item);
+        void Add(Object item);
 
         void Delete(string id);
 
-        void Update(T item);
+        void Update(Object item);
     }
 }

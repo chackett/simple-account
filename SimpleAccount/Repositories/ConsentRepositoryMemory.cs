@@ -6,7 +6,7 @@ using SimpleAccount.Domains;
 
 namespace SimpleAccount.Repositories
 {
-    public class ConsentRepositoryMemory : IRepository<Consent>
+    public class ConsentRepositoryMemory : IRepository<Consent, string>
     {
         private readonly Dictionary<string, Consent> _db;
 

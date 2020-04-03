@@ -19,18 +19,19 @@ namespace SimpleAccount.Services
 {
     public class TrueLayerConsent : IConsentService
     {
-        private readonly IRepository<Consent> _repository;
-
-        private const string TrueLayerTokenEndpoint = "https://auth.truelayer.com/connect/token";
+        private readonly IRepository<Consent, string> _repository;
+        private readonly ITrueLayerDataApi _dataApi;
         
         private readonly string _clientId;
         private readonly string _clientSecret;
         private readonly string _redirectUri; // Could be a collection to support multiple URLs
         private readonly string _authorisationUrl;
 
-        public TrueLayerConsent(IConfiguration config, IRepository<Consent> repository)
+        public TrueLayerConsent(IConfiguration config, IRepository<Consent, string> repository, ITrueLayerDataApi dataApi)
         {
             _repository = repository;
+            _dataApi = dataApi;
+
             _clientId = config["clientId"];
             _clientSecret = config["clientSecret"];
             _redirectUri = config["redirectUri"];
@@ -45,42 +46,23 @@ namespace SimpleAccount.Services
 
         public async Task CallbackAsync(string code, string state)
         {
-            var requestBody = new Dictionary<string, string>()
-            {
-                ["grant_type"] = "authorization_code",
-                ["client_id"] = _clientId,
-                ["client_secret"] = _clientSecret,
-                ["redirect_uri"] = _redirectUri,
-                ["code"] = code
-            };
-
-            var client = new HttpClient();
-            var response = await client.PostAsync(TrueLayerTokenEndpoint, new FormUrlEncodedContent(requestBody));
-
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new Exception("unexpected consent service response");
-            }
-            var responseBody = await response.Content.ReadAsStringAsync();
-
-            
-            using var jsonDoc = JsonDocument.Parse(responseBody);
-            var values = jsonDoc.RootElement;
+            var tlToken = await _dataApi.GetAccessToken(code, state);
             
             var jwtHandler = new JwtSecurityTokenHandler();
-            var token = jwtHandler.ReadJwtToken(values.GetProperty("access_token").GetString());
-
-            if (token == null)
+            var atJwt = jwtHandler.ReadJwtToken(tlToken.AccessToken);
+            
+            if (atJwt == null)
             {
                 throw new Exception("unable to retrieve consent");
             }
+            
             var consent = new Consent()
             {
                 ConsentId = state,
-                AccessTokenRaw = values.GetProperty("access_token").GetString(),
-                RefreshTokenRaw = values.GetProperty("refresh_token").GetString(),
-                AccessTokenExpiry = token.Claims.First(x => x.Type == "provider_access_token_expiry").Value,
-                RefreshTokenExpiry = token.Claims.First(x => x.Type == "provider_refresh_token_expiry").Value,
+                AccessTokenRaw = tlToken.AccessToken,
+                RefreshTokenRaw = tlToken.RefreshToken,
+                AccessTokenExpiry = atJwt.Claims.First(x => x.Type == "provider_access_token_expiry").Value,
+                RefreshTokenExpiry = atJwt.Claims.First(x => x.Type == "provider_refresh_token_expiry").Value,
             };
             
             _repository.Add(consent);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Security;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,8 +30,19 @@ namespace SimpleAccount
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSingleton<IRepository<Consent>, ConsentRepositoryMemory>();
+            services.AddSingleton<IRepository<Consent, string>, ConsentRepositoryMemory>();
+            services.AddSingleton<IRepository<Account, string>, AccountRepositoryMemory>();
+            services.AddSingleton<IRepository<Transaction, string>, TransactionRepositoryMemory>();
             services.AddSingleton<IConsentService, TrueLayerConsent>();
+            services.AddSingleton<ITrueLayerDataApi, ConcreteTrueLayerDataApi>();
+            services.AddSingleton<IAccountService, AccountService>();
+            services.AddSingleton<ICache<Account, string>, SimpleAccountCache<Account, String>>();
+            services.AddSingleton<ICache<Transaction, string>, SimpleAccountCache<Transaction, String>>();
+            // services.AddSingleton<>();
+            // services.AddSingleton<>();
+            // services.AddSingleton<>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
