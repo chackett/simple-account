@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,7 +45,7 @@ namespace SimpleAccount.Services
                 RefreshTokenExpiry = atJwt.Claims.First(x => x.Type == "provider_refresh_token_expiry").Value,
             };
             
-            _repository.Add(consent);
+            _repository.Add(state, consent);
         }
 
         public Consent GetConsent(string userId)

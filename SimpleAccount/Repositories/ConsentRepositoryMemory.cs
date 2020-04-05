@@ -20,40 +20,34 @@ namespace SimpleAccount.Repositories
             throw new System.NotImplementedException();
         }
 
-        public Consent Get(string consentId)
+        public Consent Get(string userId)
         {
-            if (!_db.ContainsKey(consentId))
+            if (!_db.ContainsKey(userId))
             {
-                throw new Exception("consent not found");    
+                throw new Exception("user not found");    
             }
 
-            return _db[consentId];
+            return _db[userId];
         }
 
-        public void Add(Consent consent)
+        public void Add(string userId, Consent consent)
         {
-            // It is intentional that we can easily override previous consent for simplicity of this demo.
-            _db[consent.ConsentId] = consent;
+            _db[userId] = consent;
         }
 
-        public void Delete(string consentId)
+        public void Delete(string userId)
         {
-            if (!_db.ContainsKey(consentId))
+            if (!_db.ContainsKey(userId))
             {
-                throw new Exception("consent not found");
+                throw new Exception("user not found");
             }
 
-            _db.Remove(consentId);
+            _db.Remove(userId);
         }
 
-        public void Update(Consent consent)
+        public void Update(string userId, Consent consent)
         {
-            if (!_db.ContainsKey(consent.ConsentId))
-            {
-                throw new Exception("consent not found");
-            }
-
-            _db[consent.ConsentId] = consent;
+            _db[userId] = consent;           
         }
     }
 }

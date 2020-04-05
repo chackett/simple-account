@@ -6,54 +6,41 @@ using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Repositories
 {
-    public class AccountRepositoryMemory : IRepository<Account, string>
+    public class AccountRepositoryMemory : IRepository<List<Account>, string>
     {
-        private readonly Dictionary<string, Account> _db;
+        private readonly Dictionary<string, List<Account>> _db;
 
         public AccountRepositoryMemory()
         {
-            _db = new Dictionary<string, Account>();
+            _db = new Dictionary<string, List<Account>>();
         }
 
-        public List<Account> GetAll(string userId)
+        public List<List<Account>> GetAll(string userId)
         {
-            throw new System.NotImplementedException();
-        }
-        
-        public Account Get(string consentId)
-        {
-            // if (!_db.ContainsKey(consentId))
-            // {
-            //     throw new Exception("consent not found");    
-            // }
-            //
-            return _db[consentId];
+            var result = new List<List<Account>>();
+            result.Add(_db[userId]);
+
+            return result;
         }
 
-        public void Add(Account account)
+        public List<Account> Get(string userId)
         {
-            // It is intentional that we can easily override previous consent for simplicity of this demo.
-            // _db[consent.ConsentId] = account;
+            return _db[userId];
+        }
+
+        public void Add(string accountId, List<Account> account)
+        {
+            _db[accountId] = account;
         }
 
         public void Delete(string consentId)
         {
-            if (!_db.ContainsKey(consentId))
-            {
-                throw new Exception("consent not found");
-            }
-
             _db.Remove(consentId);
         }
 
-        public void Update(Account account)
+        public void Update(string accountId, List<Account> account)
         {
-            // if (!_db.ContainsKey(consent.ConsentId))
-            // {
-            //     throw new Exception("consent not found");
-            // }
-            //
-            // _db[consent.ConsentId] = consent;
+            _db[accountId] = account;
         }
     }
 }

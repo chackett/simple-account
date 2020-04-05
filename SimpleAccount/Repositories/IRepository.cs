@@ -10,10 +10,10 @@ namespace SimpleAccount.Repositories
         
         Object Get(Identifier id);
 
-        void Add(Object item);
+        void Add(Identifier id, Object item);
 
-        void Delete(string id);
+        void Delete(Identifier id);
 
-        void Update(Object item);
+        void Update(Identifier id, Object item);
     }
 }

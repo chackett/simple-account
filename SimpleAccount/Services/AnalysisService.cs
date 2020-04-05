@@ -30,7 +30,7 @@ namespace SimpleAccount.Services
             foreach (var transaction in transactions)
             {
                 float tmpVal;
-
+                
                 if (transaction.MerchantName != null)
                 {
                     if (values.TryGetValue(transaction.MerchantName, out tmpVal))
