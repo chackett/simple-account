@@ -97,13 +97,15 @@ namespace SimpleAccount.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<List<Transaction>> GetTransactions(string accessToken, string accountId)
+        public async Task<List<Transaction>> GetTransactions(string accessToken, string accountId, DateTime from, DateTime to)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-            
-            //?from=${from}&to=${to}
-            var response = await client.GetAsync($"{BaseUrl}/accounts/{accountId}/transactions");
+
+            var strFrom = from.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            var strTo = to.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+            var response = await client.GetAsync($"{BaseUrl}/accounts/{accountId}/transactions?from={strFrom}&to={strTo}");
 
             if (response.StatusCode != HttpStatusCode.OK)
             {

@@ -14,7 +14,7 @@ namespace SimpleAccount.Services
             _accountService = accountService;
         }
 
-        public async Task<CategorySummaryReport> CategorySummary(string userId)
+        public async Task<CategorySummaryReport> CategorySummary(string userId, DateTime from, DateTime to)
         {
             var accounts = await _accountService.GetAccounts(userId, false);
 
@@ -22,7 +22,7 @@ namespace SimpleAccount.Services
 
             foreach (var account in accounts)
             { 
-                transactions.AddRange(await _accountService.GetTransactions(userId, account.AccountId, false));
+                transactions.AddRange(await _accountService.GetTransactions(userId, account.AccountId, false, from, to));
             }
             
             var values = new Dictionary<string, float>();

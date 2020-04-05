@@ -23,9 +23,12 @@ namespace SimpleAccount.Controllers
         }
 
         [HttpGet("[action]", Name = "Analysis_Summary")]
-        public async Task<CategorySummaryReport> CategorySummary(string userId)
+        public async Task<CategorySummaryReport> SevenDaySummary(string userId)
         {
-            return await _analysisService.CategorySummary(userId);
+            var to = DateTime.UtcNow;
+            var from = to.AddDays(-7);
+            
+            return await _analysisService.CategorySummary(userId, from, to);
         }
     }
 }

@@ -42,11 +42,11 @@ namespace SimpleAccount.Services
             }
         }
 
-        public async Task<List<Transaction>> GetTransactions(string userId, string accountId, bool invalidateCache)
+        public async Task<List<Transaction>> GetTransactions(string userId, string accountId, bool invalidateCache, DateTime from, DateTime to)
         {
             if (invalidateCache)
             {
-                var transactions = await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw, accountId);
+                var transactions = await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw, accountId, from, to);
                 _transactionRepository.Update(accountId, transactions);
                 return transactions;
             }
@@ -56,7 +56,7 @@ namespace SimpleAccount.Services
             }
             catch (Exception e)
             {
-                var transactions = await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw, accountId);
+                var transactions = await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw, accountId, from, to);
                 _transactionRepository.Update(accountId, transactions);
                 return transactions;
             }

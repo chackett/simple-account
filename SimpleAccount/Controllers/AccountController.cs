@@ -58,7 +58,11 @@ namespace SimpleAccount.Controllers
                 // };
             }
 
-            var transactions = await _accountService.GetTransactions(userId, accountId, refresh);
+            // Can't figure out optional parameters with compile time constant
+            var to = DateTime.UtcNow;
+            var from = to.AddDays(-7);
+            
+            var transactions = await _accountService.GetTransactions(userId, accountId, refresh, from, to);
 
             return transactions;
         }

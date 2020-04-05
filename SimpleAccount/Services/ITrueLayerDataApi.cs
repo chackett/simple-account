@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SimpleAccount.DTO.Response;
 
@@ -18,6 +19,6 @@ namespace SimpleAccount.Services
 
         Task<List<Account>> GetAccounts(string accessToken);
         Task<Account> GetAccount(string accessToken, string accountId);
-        Task<List<Transaction>> GetTransactions(string accessToken, string accountId);
+        Task<List<Transaction>> GetTransactions(string accessToken, string accountId, DateTime from, DateTime to);
     }
 }
