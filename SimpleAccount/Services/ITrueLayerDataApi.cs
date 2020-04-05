@@ -18,6 +18,6 @@ namespace SimpleAccount.Services
 
         Task<List<Account>> GetAccounts(string accessToken);
         Task<Account> GetAccount(string accessToken, string accountId);
-        List<Transaction> GetTransactions(string accessToken);
+        Task<List<Transaction>> GetTransactions(string accessToken, string accountId);
     }
 }

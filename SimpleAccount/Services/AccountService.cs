@@ -31,9 +31,9 @@ namespace SimpleAccount.Services
             // return _accountRepository.GetAll(userId);
         }
 
-        public List<Transaction> GetTransactions(string userId, string accountId, bool invalidateCache)
+        public async Task<List<Transaction>> GetTransactions(string userId, string accountId, bool invalidateCache)
         {
-            throw new System.NotImplementedException();
+            return await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw, accountId);
         }
     }
 }

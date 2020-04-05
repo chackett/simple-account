@@ -44,5 +44,23 @@ namespace SimpleAccount.Controllers
 
             return accounts;
         }
+
+        [HttpGet("[action]", Name = "Account_Get+Transactions")]
+        public async Task<List<DTO.Response.Transaction>> Transactions(string accountId, bool refresh = false, string userId = null)
+        {
+            // This use of userId as an argument, and being used for state is questionable and requires further
+            // review but it serves it's purpose to avoid having to hard code users.
+            if (string.IsNullOrEmpty(userId))
+            {
+                return null;
+                // return new DTO.Response.Account
+                // {
+                // };
+            }
+
+            var transactions = await _accountService.GetTransactions(userId, accountId, refresh);
+
+            return transactions;
+        }
     }
 }

@@ -5,8 +5,10 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.Extensions.Configuration;
 using SimpleAccount.DTO.Response;
+using Transaction = SimpleAccount.DTO.Response.Transaction;
 
 namespace SimpleAccount.Services
 {
@@ -91,12 +93,37 @@ namespace SimpleAccount.Services
 
         public Task<Account> GetAccount(string accessToken, string accountId)
         {
+            // This function anticipated, but not needed right now.
             throw new System.NotImplementedException();
         }
 
-        public List<Transaction> GetTransactions(string accessToken)
+        public async Task<List<Transaction>> GetTransactions(string accessToken, string accountId)
         {
-            throw new System.NotImplementedException();
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            
+            //?from=${from}&to=${to}
+            var response = await client.GetAsync($"{BaseUrl}/accounts/{accountId}/transactions");
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new Exception("unexpected service response");
+            }
+            var responseBody = await response.Content.ReadAsStringAsync();
+            
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            
+            var resp = JsonSerializer.Deserialize<TransactionList>(responseBody, options);
+
+            if (resp.Status != "Succeeded" || resp.Transactions == null)
+            {
+                throw new Exception("failed to retrieve transactions");
+            }
+
+            return resp.Transactions.ToList();
         }
     }
 }
