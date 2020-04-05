@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SimpleAccount.Domains;
+using SimpleAccount.DTO.Response;
 using SimpleAccount.Repositories;
 using SimpleAccount.Services;
 
@@ -33,16 +33,9 @@ namespace SimpleAccount
             services.AddSingleton<IRepository<Consent, string>, ConsentRepositoryMemory>();
             services.AddSingleton<IRepository<Account, string>, AccountRepositoryMemory>();
             services.AddSingleton<IRepository<Transaction, string>, TransactionRepositoryMemory>();
-            services.AddSingleton<IConsentService, TrueLayerConsent>();
             services.AddSingleton<ITrueLayerDataApi, ConcreteTrueLayerDataApi>();
+            services.AddSingleton<IConsentService, ConsentService>();
             services.AddSingleton<IAccountService, AccountService>();
-            services.AddSingleton<ICache<Account, string>, SimpleAccountCache<Account, String>>();
-            services.AddSingleton<ICache<Transaction, string>, SimpleAccountCache<Transaction, String>>();
-            // services.AddSingleton<>();
-            // services.AddSingleton<>();
-            // services.AddSingleton<>();
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

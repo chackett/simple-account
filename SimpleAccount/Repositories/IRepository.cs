@@ -1,11 +1,13 @@
-﻿using System.Dynamic;
+﻿using System.Collections.Generic;
+using System.Dynamic;
 using Microsoft.Extensions.Hosting.Internal;
-using SimpleAccount.Domains;
 
 namespace SimpleAccount.Repositories
 {
     public interface IRepository<Object, Identifier>
     {
+        List<Object> GetAll(Identifier id);
+        
         Object Get(Identifier id);
 
         void Add(Object item);

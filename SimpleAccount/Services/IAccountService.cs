@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using SimpleAccount.Domains;
-using Transaction = System.Transactions.Transaction;
+using System.Threading.Tasks;
+using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Services
 {
@@ -11,7 +11,7 @@ namespace SimpleAccount.Services
          * just return summary objects, to improve efficiency. This is fine for task at hand.
          */
         
-        List<Account> GetAccounts(Consent consent, bool invalidateCache);
-        List<Transaction> GetTransactions(Consent consent, string accountId, bool invalidateCache);
+        Task<List<Account>> GetAccounts(string userId, bool invalidateCache);
+        List<Transaction> GetTransactions(string userId, string accountId, bool invalidateCache);
     }
 }

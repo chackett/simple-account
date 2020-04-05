@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.AspNetCore.Server.IIS.Core;
-using SimpleAccount.Domains;
+using SimpleAccount.Services;
 
 namespace SimpleAccount.Repositories
 {
@@ -13,6 +13,11 @@ namespace SimpleAccount.Repositories
         public ConsentRepositoryMemory()
         {
             _db = new Dictionary<string, Consent>();
+        }
+
+        public List<Consent> GetAll(string id)
+        {
+            throw new System.NotImplementedException();
         }
 
         public Consent Get(string consentId)

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.Hosting.Internal;
-using SimpleAccount.Domains;
 
 namespace SimpleAccount.Services
 {

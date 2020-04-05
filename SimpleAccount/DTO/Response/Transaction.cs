@@ -1,4 +1,4 @@
-﻿namespace SimpleAccount.Domains
+﻿namespace SimpleAccount.DTO.Response
 {
     public class Transaction
     {

@@ -1,52 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting.Internal;
-using Microsoft.VisualBasic;
-using SimpleAccount.Domains;
 using SimpleAccount.Repositories;
 
 namespace SimpleAccount.Services
 {
-    public class TrueLayerConsent : IConsentService
+    public class ConsentService : IConsentService
     {
         private readonly IRepository<Consent, string> _repository;
-        private readonly ITrueLayerDataApi _dataApi;
-        
-        private readonly string _clientId;
-        private readonly string _clientSecret;
-        private readonly string _redirectUri; // Could be a collection to support multiple URLs
-        private readonly string _authorisationUrl;
+        private readonly ITrueLayerDataApi _trueLayerDataApi;
 
-        public TrueLayerConsent(IConfiguration config, IRepository<Consent, string> repository, ITrueLayerDataApi dataApi)
+        public ConsentService(IConfiguration config, IRepository<Consent, string> repository, ITrueLayerDataApi trueLayerDataApi)
         {
             _repository = repository;
-            _dataApi = dataApi;
-
-            _clientId = config["clientId"];
-            _clientSecret = config["clientSecret"];
-            _redirectUri = config["redirectUri"];
-            _authorisationUrl = config["authorisationUrl"];
+            _trueLayerDataApi = trueLayerDataApi;
         }
-
-        public string AuthorisationUrl(string userId)
+        
+        public string AuthorisationUrl(string state)
         {
-            // Probably a redundant getter.
-            return $"{_authorisationUrl}&state={userId}";
+            return _trueLayerDataApi.AuthorisationUrl(state);
         }
 
         public async Task CallbackAsync(string code, string state)
         {
-            var tlToken = await _dataApi.GetAccessToken(code, state);
+            var tlToken = await _trueLayerDataApi.GetAccessToken(code, state);
             
             var jwtHandler = new JwtSecurityTokenHandler();
             var atJwt = jwtHandler.ReadJwtToken(tlToken.AccessToken);
@@ -70,7 +49,7 @@ namespace SimpleAccount.Services
 
         public Consent GetConsent(string userId)
         {
-           return _repository.Get(userId);
+            return _repository.Get(userId);
         }
     }
 }

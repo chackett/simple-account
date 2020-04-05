@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting.Internal;
-using SimpleAccount.Domains;
-using Transaction = System.Transactions.Transaction;
+using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Services
 {
@@ -14,10 +12,12 @@ namespace SimpleAccount.Services
          * of various banking services.
          */
 
-        Task<TrueLayerAccessToken> GetAccessToken(string oneTimeCode, string state);
+        public string AuthorisationUrl(string state);
         
-        List<Account> GetAccounts(string accessToken);
-        Account GetAccount(string accessToken, string accountId);
+        Task<TrueLayerAccessToken> GetAccessToken(string oneTimeCode, string state);
+
+        Task<List<Account>> GetAccounts(string accessToken);
+        Task<Account> GetAccount(string accessToken, string accountId);
         List<Transaction> GetTransactions(string accessToken);
     }
 }

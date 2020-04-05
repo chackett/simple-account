@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.AspNetCore.Server.IIS.Core;
-using SimpleAccount.Domains;
+using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Repositories
 {
@@ -15,6 +15,11 @@ namespace SimpleAccount.Repositories
             _db = new Dictionary<string, Transaction>();
         }
 
+        public List<Transaction> GetAll(string accountId)
+        {
+            throw new System.NotImplementedException();
+        }
+        
         public Transaction Get(string consentId)
         {
             if (!_db.ContainsKey(consentId))

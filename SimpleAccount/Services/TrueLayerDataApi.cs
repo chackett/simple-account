@@ -1,29 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using SimpleAccount.Domains;
-using Transaction = System.Transactions.Transaction;
+using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Services
 {
     public class ConcreteTrueLayerDataApi : ITrueLayerDataApi
     {
+        private const string BaseUrl = "https://api.truelayer.com/data/v1";
         private const string TrueLayerTokenEndpoint = "https://auth.truelayer.com/connect/token";
         
         private readonly string _clientId;
         private readonly string _clientSecret;
         private readonly string _redirectUri;
+        private readonly string _authorisationUrl;
 
         public ConcreteTrueLayerDataApi(IConfiguration config)
         {
             _clientId = config["clientId"];
             _clientSecret = config["clientSecret"];
             _redirectUri = config["redirectUri"];
+            _authorisationUrl = config["authorisationUrl"];
+        }
+        
+        public string AuthorisationUrl(string state)
+        {
+            return $"{_authorisationUrl}&state={state}";
         }
 
         public async Task<TrueLayerAccessToken> GetAccessToken(string oneTimeCode, string state)
@@ -42,21 +49,9 @@ namespace SimpleAccount.Services
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                throw new Exception("unexpected consent service response");
+                throw new Exception("unexpected service response");
             }
             var responseBody = await response.Content.ReadAsStringAsync();
-
-            
-            // using var jsonDoc = JsonDocument.Parse(responseBody);
-            // var values = jsonDoc.RootElement;
-            //
-            // var jwtHandler = new JwtSecurityTokenHandler();
-            // var token = jwtHandler.ReadJwtToken(values.GetProperty("access_token").GetString());
-            //
-            // if (token == null)
-            // {
-            //     throw new Exception("unable to retrieve consent");
-            // }
             
             var options = new JsonSerializerOptions
             {
@@ -66,12 +61,35 @@ namespace SimpleAccount.Services
             return JsonSerializer.Deserialize<TrueLayerAccessToken>(responseBody, options);
         }
 
-        public List<Account> GetAccounts(string accessToken)
+        public async Task<List<Account>> GetAccounts(string accessToken)
         {
-            throw new System.NotImplementedException();
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            
+            var response = await client.GetAsync($"{BaseUrl}/accounts");
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new Exception("unexpected service response");
+            }
+            var responseBody = await response.Content.ReadAsStringAsync();
+            
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            
+            var resp = JsonSerializer.Deserialize<AccountList>(responseBody, options);
+
+            if (resp.Status != "Succeeded" || resp.Accounts == null)
+            {
+                throw new Exception("failed to retrieve accounts");
+            }
+
+            return resp.Accounts.ToList();
         }
 
-        public Account GetAccount(string accessToken, string accountId)
+        public Task<Account> GetAccount(string accessToken, string accountId)
         {
             throw new System.NotImplementedException();
         }
