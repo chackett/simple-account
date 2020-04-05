@@ -34,20 +34,15 @@ namespace SimpleAccount.Controllers
             {
                 return new DTO.Response.AuthorisationCallbackResponse()
                 {
-                    Message = request.Error
+                    Message = $"Error - {request.Error}"
                 };    
             }
             
-            // Take the callback to finalise link to PSU account
-            // Store the token somewhere.
-            
             await _consentService.CallbackAsync(request.Code, request.State);
-
-            // return URI of the created resource.
-            // return response.Headers.Location;
+            
             return new DTO.Response.AuthorisationCallbackResponse()
             {
-                Message = ""
+                Message = "Success - Consent to accounts granted."
             };
         }
 
