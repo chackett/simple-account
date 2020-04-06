@@ -3,7 +3,7 @@ SimpleAccount is a simple bank account - It merges all your accounts into just o
 
 # Usage
 
-## Preequisites
+## Prerequisites
 
 * .NET Core SDK (I used 3.1 on Windows 10)
 * Docker (I used Docker Desktop 2.2.0.5, Windows 10)
