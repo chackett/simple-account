@@ -1,6 +1,4 @@
-﻿using System.Collections.Specialized;
-
-namespace SimpleAccount.DTO.Response
+﻿namespace SimpleAccount.DTO.Response
 {
     public class AuthorisationLinkResponse
     {

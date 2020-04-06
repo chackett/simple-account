@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using Microsoft.Extensions.Hosting.Internal;
+﻿using System.Threading.Tasks;
 
 namespace SimpleAccount.Services
 {

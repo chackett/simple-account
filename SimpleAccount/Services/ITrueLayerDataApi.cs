@@ -14,7 +14,7 @@ namespace SimpleAccount.Services
          */
 
         public string AuthorisationUrl(string state);
-        
+
         Task<TrueLayerAccessToken> GetAccessToken(string oneTimeCode, string state);
 
         Task<List<Account>> GetAccounts(string accessToken);

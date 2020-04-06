@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.AspNetCore.Server.IIS.Core;
 using SimpleAccount.Services;
 
 namespace SimpleAccount.Repositories
@@ -17,15 +15,12 @@ namespace SimpleAccount.Repositories
 
         public List<Consent> GetAll(string id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Consent Get(string userId)
         {
-            if (!_db.ContainsKey(userId))
-            {
-                throw new Exception("user not found");    
-            }
+            if (!_db.ContainsKey(userId)) throw new Exception("user not found");
 
             return _db[userId];
         }
@@ -37,17 +32,14 @@ namespace SimpleAccount.Repositories
 
         public void Delete(string userId)
         {
-            if (!_db.ContainsKey(userId))
-            {
-                throw new Exception("user not found");
-            }
+            if (!_db.ContainsKey(userId)) throw new Exception("user not found");
 
             _db.Remove(userId);
         }
 
         public void Update(string userId, Consent consent)
         {
-            _db[userId] = consent;           
+            _db[userId] = consent;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Repositories
@@ -22,7 +21,7 @@ namespace SimpleAccount.Repositories
 
             return result;
         }
-        
+
         public List<Transaction> Get(string accountId)
         {
             return _db[accountId];
@@ -42,7 +41,5 @@ namespace SimpleAccount.Repositories
         {
             _db[accountId] = transactions;
         }
-        
-        
     }
 }

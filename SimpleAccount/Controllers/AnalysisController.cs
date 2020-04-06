@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,8 +11,8 @@ namespace SimpleAccount.Controllers
     [Route("[controller]")]
     public class AnalysisController : ControllerBase
     {
-        private readonly ILogger<AnalysisController> _logger;
         private readonly IAnalysisService _analysisService;
+        private readonly ILogger<AnalysisController> _logger;
 
         public AnalysisController(ILogger<AnalysisController> logger, IAnalysisService analysisService)
         {
@@ -27,7 +25,7 @@ namespace SimpleAccount.Controllers
         {
             var to = DateTime.UtcNow;
             var from = to.AddDays(-7);
-            
+
             return await _analysisService.CategorySummary(userId, from, to);
         }
     }

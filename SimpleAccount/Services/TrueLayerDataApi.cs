@@ -5,10 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Transactions;
 using Microsoft.Extensions.Configuration;
 using SimpleAccount.DTO.Response;
-using Transaction = SimpleAccount.DTO.Response.Transaction;
 
 namespace SimpleAccount.Services
 {
@@ -16,11 +14,11 @@ namespace SimpleAccount.Services
     {
         private const string BaseUrl = "https://api.truelayer.com/data/v1";
         private const string TrueLayerTokenEndpoint = "https://auth.truelayer.com/connect/token";
-        
+        private readonly string _authorisationUrl;
+
         private readonly string _clientId;
         private readonly string _clientSecret;
         private readonly string _redirectUri;
-        private readonly string _authorisationUrl;
 
         public ConcreteTrueLayerDataApi(IConfiguration config)
         {
@@ -29,7 +27,7 @@ namespace SimpleAccount.Services
             _redirectUri = config["redirectUri"];
             _authorisationUrl = config["authorisationUrl"];
         }
-        
+
         public string AuthorisationUrl(string state)
         {
             return $"{_authorisationUrl}&state={state}";
@@ -37,7 +35,7 @@ namespace SimpleAccount.Services
 
         public async Task<TrueLayerAccessToken> GetAccessToken(string oneTimeCode, string state)
         {
-            var requestBody = new Dictionary<string, string>()
+            var requestBody = new Dictionary<string, string>
             {
                 ["grant_type"] = "authorization_code",
                 ["client_id"] = _clientId,
@@ -49,17 +47,14 @@ namespace SimpleAccount.Services
             var client = new HttpClient();
             var response = await client.PostAsync(TrueLayerTokenEndpoint, new FormUrlEncodedContent(requestBody));
 
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new Exception("unexpected service response");
-            }
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("unexpected service response");
             var responseBody = await response.Content.ReadAsStringAsync();
-            
+
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            
+
             return JsonSerializer.Deserialize<TrueLayerAccessToken>(responseBody, options);
         }
 
@@ -67,26 +62,20 @@ namespace SimpleAccount.Services
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-            
+
             var response = await client.GetAsync($"{BaseUrl}/accounts");
 
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new Exception("unexpected service response");
-            }
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("unexpected service response");
             var responseBody = await response.Content.ReadAsStringAsync();
-            
+
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            
+
             var resp = JsonSerializer.Deserialize<AccountList>(responseBody, options);
 
-            if (resp.Status != "Succeeded" || resp.Accounts == null)
-            {
-                throw new Exception("failed to retrieve accounts");
-            }
+            if (resp.Status != "Succeeded" || resp.Accounts == null) throw new Exception("failed to retrieve accounts");
 
             return resp.Accounts.ToList();
         }
@@ -94,10 +83,11 @@ namespace SimpleAccount.Services
         public Task<Account> GetAccount(string accessToken, string accountId)
         {
             // This function anticipated, but not needed right now.
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public async Task<List<Transaction>> GetTransactions(string accessToken, string accountId, DateTime from, DateTime to)
+        public async Task<List<Transaction>> GetTransactions(string accessToken, string accountId, DateTime from,
+            DateTime to)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
@@ -105,25 +95,21 @@ namespace SimpleAccount.Services
             var strFrom = from.ToString("yyyy-MM-ddTHH:mm:ssZ");
             var strTo = to.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
-            var response = await client.GetAsync($"{BaseUrl}/accounts/{accountId}/transactions?from={strFrom}&to={strTo}");
+            var response =
+                await client.GetAsync($"{BaseUrl}/accounts/{accountId}/transactions?from={strFrom}&to={strTo}");
 
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new Exception("unexpected service response");
-            }
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("unexpected service response");
             var responseBody = await response.Content.ReadAsStringAsync();
-            
+
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            
+
             var resp = JsonSerializer.Deserialize<TransactionList>(responseBody, options);
 
             if (resp.Status != "Succeeded" || resp.Transactions == null)
-            {
                 throw new Exception("failed to retrieve transactions");
-            }
 
             return resp.Transactions.ToList();
         }

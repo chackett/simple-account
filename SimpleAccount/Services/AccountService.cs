@@ -8,13 +8,14 @@ namespace SimpleAccount.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly ITrueLayerDataApi _trueLayerDataApi;
-        private readonly IConsentService _consentService;
         private readonly IRepository<List<Account>, string> _accountRepository;
+        private readonly IConsentService _consentService;
         private readonly IRepository<List<Transaction>, string> _transactionRepository;
-        
+        private readonly ITrueLayerDataApi _trueLayerDataApi;
+
         public AccountService(ITrueLayerDataApi trueLayerDataApi, IConsentService consentService,
-            IRepository<List<Account>, string> accountRepository, IRepository<List<Transaction>, string> transactionRepository)
+            IRepository<List<Account>, string> accountRepository,
+            IRepository<List<Transaction>, string> transactionRepository)
         {
             _trueLayerDataApi = trueLayerDataApi;
             _consentService = consentService;
@@ -30,6 +31,7 @@ namespace SimpleAccount.Services
                 _accountRepository.Update(userId, accounts);
                 return accounts;
             }
+
             try
             {
                 return _accountRepository.Get(userId);
@@ -42,21 +44,27 @@ namespace SimpleAccount.Services
             }
         }
 
-        public async Task<List<Transaction>> GetTransactions(string userId, string accountId, bool invalidateCache, DateTime from, DateTime to)
+        public async Task<List<Transaction>> GetTransactions(string userId, string accountId, bool invalidateCache,
+            DateTime from, DateTime to)
         {
             if (invalidateCache)
             {
-                var transactions = await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw, accountId, from, to);
+                var transactions =
+                    await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw,
+                        accountId, from, to);
                 _transactionRepository.Update(accountId, transactions);
                 return transactions;
             }
+
             try
             {
                 return _transactionRepository.Get(accountId);
             }
             catch (Exception e)
             {
-                var transactions = await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw, accountId, from, to);
+                var transactions =
+                    await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw,
+                        accountId, from, to);
                 _transactionRepository.Update(accountId, transactions);
                 return transactions;
             }

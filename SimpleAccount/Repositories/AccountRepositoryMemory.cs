@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.AspNetCore.Server.IIS.Core;
+﻿using System.Collections.Generic;
 using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Repositories

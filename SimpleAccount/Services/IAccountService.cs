@@ -11,8 +11,10 @@ namespace SimpleAccount.Services
          * This could be improved to add getters that return more detailed class definitions. And have the GetAlls()
          * just return summary objects, to improve efficiency. This is fine for task at hand.
          */
-        
+
         Task<List<Account>> GetAccounts(string userId, bool invalidateCache);
-        Task<List<Transaction>> GetTransactions(string userId, string accountId, bool invalidateCache, DateTime from, DateTime to);
+
+        Task<List<Transaction>> GetTransactions(string userId, string accountId, bool invalidateCache, DateTime from,
+            DateTime to);
     }
 }
