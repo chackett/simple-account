@@ -26,35 +26,17 @@ namespace SimpleAccount.Controllers
         {
             // This use of userId as an argument, and being used for state is questionable and requires further
             // review but it serves it's purpose to avoid having to hard code users.
-            if (string.IsNullOrEmpty(userId))
-                return null;
-            // return new DTO.Response.Account
-            // {
-            // };
-
-            var accounts = await _accountService.GetAccounts(userId, refresh);
-
-            return accounts;
+            return await _accountService.GetAccounts(userId, refresh);
         }
 
         [HttpGet("[action]", Name = "Account_Get+Transactions")]
         public async Task<List<Transaction>> Transactions(string accountId, bool refresh = false, string userId = null)
         {
-            // This use of userId as an argument, and being used for state is questionable and requires further
-            // review but it serves it's purpose to avoid having to hard code users.
-            if (string.IsNullOrEmpty(userId))
-                return null;
-            // return new DTO.Response.Account
-            // {
-            // };
-
-            // Can't figure out optional parameters with compile time constant
+            // Can't figure out optional parameters that must be compile time constant
             var to = DateTime.UtcNow;
             var from = to.AddDays(-7);
 
-            var transactions = await _accountService.GetTransactions(userId, accountId, refresh, from, to);
-
-            return transactions;
+            return await _accountService.GetTransactions(userId, accountId, refresh, from, to);
         }
     }
 }

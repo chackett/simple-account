@@ -27,7 +27,7 @@ namespace SimpleAccount.Controllers
             if (!string.IsNullOrEmpty(request.Error))
                 return new AuthorisationCallbackResponse
                 {
-                    Message = $"Error - {request.Error}"
+                    Message = $"ErrorMessage - {request.Error}"
                 };
 
             await _consentService.CallbackAsync(request.Code, request.State);

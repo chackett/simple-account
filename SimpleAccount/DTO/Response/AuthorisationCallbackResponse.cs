@@ -1,7 +1,9 @@
-﻿namespace SimpleAccount.DTO.Response
+﻿using System.Text.Json.Serialization;
+
+namespace SimpleAccount.DTO.Response
 {
     public class AuthorisationCallbackResponse
     {
-        public string Message { get; set; }
+        [JsonPropertyName("provider")] public string Message { get; set; }
     }
 }
