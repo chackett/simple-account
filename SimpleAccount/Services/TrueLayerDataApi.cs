@@ -79,13 +79,7 @@ namespace SimpleAccount.Services
 
             return resp.Accounts.ToList();
         }
-
-        public Task<Account> GetAccount(string accessToken, string accountId)
-        {
-            // This function anticipated, but not needed right now.
-            throw new NotImplementedException();
-        }
-
+        
         public async Task<List<Transaction>> GetTransactions(string accessToken, string accountId, DateTime from,
             DateTime to)
         {
