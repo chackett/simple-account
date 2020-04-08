@@ -1,45 +1,74 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Extensions.Hosting.Internal;
+using Microsoft.VisualBasic;
 using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Repositories
 {
-    public class TransactionRepositoryMemory : IRepository<List<Transaction>, string>
+    public class TransactionRepositoryMemory : ITransactionRepository<Transaction, string>
     {
-        // Pushing the bounds here :/
-        // [account_id] -> [transaction]
-        private readonly Dictionary<string, List<Transaction>> _db;
+        // userId -> accountId
+        private readonly Dictionary<string, List<string>> _userAccounts;
+        // accountId -> transactions
+        private readonly Dictionary<string, List<Transaction>> _accountTransactions;
 
         public TransactionRepositoryMemory()
         {
-            _db = new Dictionary<string, List<Transaction>>();
+            _userAccounts = new Dictionary<string, List<string>>();
+            _accountTransactions = new Dictionary<string, List<Transaction>>();
         }
 
-        public List<List<Transaction>> GetAll(string accountId)
+        public List<Transaction> GetAll(string userId)
         {
-            var result = new List<List<Transaction>>();
-            result.Add(_db[accountId]);
+            var result = new List<DTO.Response.Transaction>();
+
+            if (!_userAccounts.ContainsKey(userId))
+            {
+                return result;
+            }
+            
+            var accounts = _userAccounts[userId];
+
+            foreach (var account in accounts)
+            {
+                result.AddRange(_accountTransactions[account]);
+            }
 
             return result;
         }
 
-        public List<Transaction> Get(string accountId)
+        public List<Transaction> GetAccount(string accountId)
         {
-            return _db[accountId];
+            return !_accountTransactions.ContainsKey(accountId) ? new List<Transaction>(0) : _accountTransactions[accountId];
         }
 
-        public void Add(string accountId, List<Transaction> transactions)
+        public void Add(string userId, string accountId, List<Transaction> transactions)
         {
-            _db[accountId] = transactions;
+            if (!_userAccounts.ContainsKey(userId))
+            {
+                _userAccounts.Add(userId, new List<string>());
+            }
+            
+            // Only add the user account if we are not aware of it yet.
+            if (!_userAccounts[userId].Contains(accountId))
+            {
+                _userAccounts[userId].Add(accountId);    
+            }
+            _accountTransactions[accountId] = transactions;
         }
 
-        public void Delete(string accountId)
+        public void Delete(string userId, string accountId)
         {
-            _db.Remove(accountId);
+            if (_userAccounts.ContainsKey(userId) && _userAccounts[userId].Contains(accountId))
+            {
+                _userAccounts[userId].Remove(accountId);
+            }
+            _accountTransactions.Remove(accountId);
         }
 
         public void Update(string accountId, List<Transaction> transactions)
         {
-            _db[accountId] = transactions;
+            _accountTransactions[accountId] = transactions;
         }
     }
 }

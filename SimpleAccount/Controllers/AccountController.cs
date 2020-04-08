@@ -30,13 +30,13 @@ namespace SimpleAccount.Controllers
         }
 
         [HttpGet("[action]", Name = "Account_Get+Transactions")]
-        public async Task<List<Transaction>> Transactions(string accountId, bool refresh = false, string userId = null)
+        public async Task<List<Transaction>> Transactions(string userId, bool refresh = false)
         {
             // Can't figure out optional parameters that must be compile time constant
             var to = DateTime.UtcNow;
-            var from = to.AddDays(-7);
+            var from = to.AddMonths(-3);
 
-            return await _accountService.GetTransactions(userId, accountId, refresh, from, to);
+            return await _accountService.GetTransactions(userId, refresh, from, to);
         }
     }
 }

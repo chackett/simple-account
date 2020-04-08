@@ -14,15 +14,15 @@ namespace SimpleAccount.Services
             _accountService = accountService;
         }
 
-        public async Task<CategorySummaryReport> CategorySummary(string userId, DateTime from, DateTime to)
+        public async Task<CategorySummaryReport> CategorySummary(string userId, DateTime from, DateTime to, bool invalidateCache)
         {
-            var accounts = await _accountService.GetAccounts(userId, false);
+            var accounts = await _accountService.GetAccounts(userId, invalidateCache);
 
             var transactions = new List<Transaction>();
 
             foreach (var account in accounts)
                 transactions.AddRange(
-                    await _accountService.GetTransactions(userId, account.AccountId, false, from, to));
+                    await _accountService.GetTransactions(userId, invalidateCache, from, to));
 
             var values = new Dictionary<string, float>();
 

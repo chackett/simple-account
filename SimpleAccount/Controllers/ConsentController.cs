@@ -30,11 +30,11 @@ namespace SimpleAccount.Controllers
                     Message = $"ErrorMessage - {request.Error}"
                 };
 
-            await _consentService.CallbackAsync(request.Code, request.State);
+            var consent = await _consentService.CallbackAsync(request.Code, request.State);
 
             return new AuthorisationCallbackResponse
             {
-                Message = "Success - Consent to accounts granted."
+                Message = $"Success - Consent to {consent.ConnectorId} granted."
             };
         }
 

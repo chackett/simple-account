@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Repositories
@@ -22,22 +23,24 @@ namespace SimpleAccount.Repositories
 
         public List<Account> Get(string userId)
         {
-            return _db[userId];
+            _db.TryGetValue(userId, out var result);
+
+            return result;
         }
 
-        public void Add(string accountId, List<Account> account)
+        public void Add(string userId, List<Account> account)
         {
-            _db[accountId] = account;
+            _db[userId] = account;
         }
 
-        public void Delete(string consentId)
+        public void Delete(string userId)
         {
-            _db.Remove(consentId);
+            _db.Remove(userId);
         }
 
-        public void Update(string accountId, List<Account> account)
+        public void Update(string userId, List<Account> account)
         {
-            _db[accountId] = account;
+            _db[userId] = account;
         }
     }
 }

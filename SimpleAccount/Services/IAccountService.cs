@@ -14,7 +14,7 @@ namespace SimpleAccount.Services
 
         Task<List<Account>> GetAccounts(string userId, bool invalidateCache);
 
-        Task<List<Transaction>> GetTransactions(string userId, string accountId, bool invalidateCache, DateTime from,
+        Task<List<Transaction>> GetTransactions(string userId, bool invalidateCache, DateTime from,
             DateTime to);
     }
 }

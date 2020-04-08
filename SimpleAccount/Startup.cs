@@ -25,7 +25,7 @@ namespace SimpleAccount
             services.AddControllers();
             services.AddSingleton<IRepository<Consent, string>, ConsentRepositoryMemory>();
             services.AddSingleton<IRepository<List<Account>, string>, AccountRepositoryMemory>();
-            services.AddSingleton<IRepository<List<Transaction>, string>, TransactionRepositoryMemory>();
+            services.AddSingleton<ITransactionRepository<Transaction, string>, TransactionRepositoryMemory>();
             services.AddSingleton<ITrueLayerDataApi, ConcreteTrueLayerDataApi>();
             services.AddSingleton<IConsentService, ConsentService>();
             services.AddSingleton<IAnalysisService, AnalysisService>();

@@ -25,7 +25,7 @@ namespace SimpleAccount.DTO.Response
 
         [JsonPropertyName("merchant_name")] public string MerchantName { get; set; }
 
-        [JsonPropertyName("running_balance")] public string RunningBalance { get; set; }
+        [JsonPropertyName("running_balance")] public RunningBalance RunningBalance { get; set; }
 
         [JsonPropertyName("meta")] public Dictionary<string, object> Meta { get; set; }
     }

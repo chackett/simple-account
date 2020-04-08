@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using System.Transactions;
+using Microsoft.Extensions.Hosting.Internal;
 using SimpleAccount.DTO.Response;
 using SimpleAccount.Repositories;
+using Transaction = SimpleAccount.DTO.Response.Transaction;
 
 namespace SimpleAccount.Services
 {
@@ -10,12 +16,12 @@ namespace SimpleAccount.Services
     {
         private readonly IRepository<List<Account>, string> _accountRepository;
         private readonly IConsentService _consentService;
-        private readonly IRepository<List<Transaction>, string> _transactionRepository;
+        private readonly ITransactionRepository<Transaction, string> _transactionRepository;
         private readonly ITrueLayerDataApi _trueLayerDataApi;
 
         public AccountService(ITrueLayerDataApi trueLayerDataApi, IConsentService consentService,
             IRepository<List<Account>, string> accountRepository,
-            IRepository<List<Transaction>, string> transactionRepository)
+            ITransactionRepository<Transaction, string> transactionRepository)
         {
             _trueLayerDataApi = trueLayerDataApi;
             _consentService = consentService;
@@ -25,49 +31,55 @@ namespace SimpleAccount.Services
 
         public async Task<List<Account>> GetAccounts(string userId, bool invalidateCache)
         {
-            if (invalidateCache)
-            {
-                var accounts = await _trueLayerDataApi.GetAccounts(_consentService.GetConsent(userId).AccessTokenRaw);
-                _accountRepository.Update(userId, accounts);
-                return accounts;
-            }
-
-            try
-            {
-                return _accountRepository.Get(userId);
-            }
-            catch (Exception e)
-            {
-                var accounts = await _trueLayerDataApi.GetAccounts(_consentService.GetConsent(userId).AccessTokenRaw);
-                _accountRepository.Update(userId, accounts);
-                return accounts;
-            }
+            return invalidateCache ? await RefreshAccounts(userId) : _accountRepository.Get(userId);
         }
 
-        public async Task<List<Transaction>> GetTransactions(string userId, string accountId, bool invalidateCache,
+        public async Task<List<Transaction>> GetTransactions(string userId, bool invalidateCache,
             DateTime from, DateTime to)
         {
-            if (invalidateCache)
+            return invalidateCache
+                ? await RefreshTransactions(userId, from, to)
+                : _transactionRepository.GetAll(userId);
+        }
+        
+        private async Task<List<Account>> RefreshAccounts(string userId)
+        {
+            var result = new List<Account>();
+            foreach (var consent in _consentService.GetConsents(userId))
             {
-                var transactions =
-                    await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw,
-                        accountId, from, to);
-                _transactionRepository.Update(accountId, transactions);
-                return transactions;
+                var accounts = await _trueLayerDataApi.GetAccounts(consent.AccessTokenRaw);
+                result.AddRange(accounts);
+                _accountRepository.Update(userId, accounts);
+                       
             }
+            return result;
+        }
 
-            try
+        private async Task<List<Transaction>> RefreshTransactions(string userId, DateTime from, DateTime to)
+        {
+            // Will need an up to date account list, to refresh transactions.
+            var accounts = await RefreshAccounts(userId);
+            
+            // We have a list of accounts, with a potential variety of account providers, meaning we need to
+            // use the correct consent for the correct provider.
+            // Convert the consents to a dictionary, with "connector id" as key. Which we can look up when iterating
+            // the accounts.
+            
+            // Here's hoping "connector-id" is the same as "provider_id".
+
+            var consents = _consentService.GetConsents(userId);
+            var providerConsents = consents.ToDictionary(x => x.ConnectorId);
+            
+            // This approach will only support one provider each.
+            var result = new List<Transaction>();
+            foreach (var account in accounts)
             {
-                return _transactionRepository.Get(accountId);
+                var consent = providerConsents[account.Provider.ProviderId];
+                var transactions = await _trueLayerDataApi.GetTransactions(consent.AccessTokenRaw, account.AccountId, from, to);
+                result.AddRange(transactions);
             }
-            catch (Exception e)
-            {
-                var transactions =
-                    await _trueLayerDataApi.GetTransactions(_consentService.GetConsent(userId).AccessTokenRaw,
-                        accountId, from, to);
-                _transactionRepository.Update(accountId, transactions);
-                return transactions;
-            }
+            _transactionRepository.Update(userId, result);
+            return result;
         }
     }
 }

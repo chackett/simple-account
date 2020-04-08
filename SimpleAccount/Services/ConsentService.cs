@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +26,7 @@ namespace SimpleAccount.Services
             return _trueLayerDataApi.AuthorisationUrl(state);
         }
 
-        public async Task CallbackAsync(string code, string state)
+        public async Task<Consent> CallbackAsync(string code, string state)
         {
             var tlToken = await _trueLayerDataApi.GetAccessToken(code, state);
 
@@ -38,16 +40,19 @@ namespace SimpleAccount.Services
                 ConsentId = state,
                 AccessTokenRaw = tlToken.AccessToken,
                 RefreshTokenRaw = tlToken.RefreshToken,
-                AccessTokenExpiry = atJwt.Claims.First(x => x.Type == "provider_access_token_expiry").Value,
-                RefreshTokenExpiry = atJwt.Claims.First(x => x.Type == "provider_refresh_token_expiry").Value
+                // AccessTokenExpiry = atJwt.Claims.First(x => x.Type == "provider_access_token_expiry").Value,
+                // RefreshTokenExpiry = atJwt.Claims.First(x => x.Type == "provider_refresh_token_expiry").Value,
+                ConnectorId = atJwt.Claims.First(x => x.Type == "connector_id").Value
             };
 
             _repository.Add(state, consent);
+
+            return consent;
         }
 
-        public Consent GetConsent(string userId)
+        public List<Consent> GetConsents(string userId)
         {
-            return _repository.Get(userId);
+            return _repository.GetAll(userId);
         }
     }
 }

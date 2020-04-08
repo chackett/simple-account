@@ -6,6 +6,6 @@ namespace SimpleAccount.Services
 {
     public interface IAnalysisService
     {
-        Task<CategorySummaryReport> CategorySummary(string userId, DateTime from, DateTime to);
+        Task<CategorySummaryReport> CategorySummary(string userId, DateTime from, DateTime to, bool invalidateCache);
     }
 }
