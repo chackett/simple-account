@@ -5,11 +5,11 @@ using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Services
 {
-    public class AnalysisService : IAnalysisService
+    public class AnalyticsService : IAnalyticsService
     {
         private readonly IAccountService _accountService;
 
-        public AnalysisService(IAccountService accountService)
+        public AnalyticsService(IAccountService accountService)
         {
             _accountService = accountService;
         }

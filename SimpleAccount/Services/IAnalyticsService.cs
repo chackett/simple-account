@@ -4,7 +4,7 @@ using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Services
 {
-    public interface IAnalysisService
+    public interface IAnalyticsService
     {
         Task<CategorySummaryReport> CategorySummary(string userId, DateTime from, DateTime to, bool invalidateCache);
     }

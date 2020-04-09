@@ -13,9 +13,9 @@ namespace SimpleAccount.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private readonly ILogger<AnalysisController> _logger;
+        private readonly ILogger<AnalyticsController> _logger;
 
-        public AccountController(ILogger<AnalysisController> logger, IAccountService accountService)
+        public AccountController(ILogger<AnalyticsController> logger, IAccountService accountService)
         {
             _logger = logger;
             _accountService = accountService;

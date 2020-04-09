@@ -9,24 +9,24 @@ namespace SimpleAccount.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AnalysisController : ControllerBase
+    public class AnalyticsController : ControllerBase
     {
-        private readonly IAnalysisService _analysisService;
-        private readonly ILogger<AnalysisController> _logger;
+        private readonly IAnalyticsService _analyticsService;
+        private readonly ILogger<AnalyticsController> _logger;
 
-        public AnalysisController(ILogger<AnalysisController> logger, IAnalysisService analysisService)
+        public AnalyticsController(ILogger<AnalyticsController> logger, IAnalyticsService analyticsService)
         {
             _logger = logger;
-            _analysisService = analysisService;
+            _analyticsService = analyticsService;
         }
 
-        [HttpGet("[action]", Name = "Analysis_Summary")]
+        [HttpGet("[action]", Name = "Analytics_Summary")]
         public async Task<CategorySummaryReport> SevenDaySummary(string userId, bool refresh = false)
         {
             var to = DateTime.UtcNow;
             var from = to.AddDays(-7);
 
-            return await _analysisService.CategorySummary(userId, from, to, refresh);
+            return await _analyticsService.CategorySummary(userId, from, to, refresh);
         }
     }
 }

@@ -26,7 +26,7 @@ Get transactions for specified account. AccountId can be retrieved from accounts
 GET `http://localhost:3000/account/transactions?accountId=##ACCOUNT-ID##&refresh=false&userId=demoUser`
 
 Get a sevenday summary of expenditure. Summarrises expense by merchant name.  
-GET `http://localhost:3000/analysis/sevendaysummary?userId=demoUser&refresh=false`
+GET `http://localhost:3000/analytics/sevendaysummary?userId=demoUser&refresh=false`
 
 TrueLayer consent callback URL - TrueLayer will POST back to this URL during consent process  
 POST `http://localhost:3000/consent/callback`
