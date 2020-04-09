@@ -41,6 +41,7 @@ namespace SimpleAccount.Services
                 ConsentId = state,
                 AccessTokenRaw = tlToken.AccessToken,
                 RefreshTokenRaw = tlToken.RefreshToken,
+                // Commented - These seem to be missing from the Mock Back response.
                 // AccessTokenExpiry = atJwt.Claims.First(x => x.Type == "provider_access_token_expiry").Value,
                 // RefreshTokenExpiry = atJwt.Claims.First(x => x.Type == "provider_refresh_token_expiry").Value,
                 ConnectorId = atJwt.Claims.First(x => x.Type == "connector_id").Value
