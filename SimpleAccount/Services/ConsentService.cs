@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using SimpleAccount.Domains;
 using SimpleAccount.Repositories;
 
 namespace SimpleAccount.Services

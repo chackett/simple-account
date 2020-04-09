@@ -4,6 +4,6 @@ namespace SimpleAccount.DTO.Response
 {
     public class AuthorisationCallbackResponse
     {
-        [JsonPropertyName("provider")] public string Message { get; set; }
+        [JsonPropertyName("message")] public string Message { get; set; }
     }
 }

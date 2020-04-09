@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SimpleAccount.Services
+namespace SimpleAccount.Domains
 {
     public class TrueLayerAccessToken
     {

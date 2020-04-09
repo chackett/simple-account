@@ -12,10 +12,13 @@ namespace SimpleAccount.Repositories
         // accountId -> transactions
         private readonly Dictionary<string, List<Transaction>> _accountTransactions;
 
+        private bool unused;
+
         public TransactionRepositoryMemory()
         {
             _userAccounts = new Dictionary<string, List<string>>();
             _accountTransactions = new Dictionary<string, List<Transaction>>();
+            unused = true;
         }
 
         public List<Transaction> GetAll(string userId)
@@ -27,12 +30,7 @@ namespace SimpleAccount.Repositories
                 return result;
             }
             
-            var accounts = _userAccounts[userId];
-
-            foreach (var account in accounts)
-            {
-                result.AddRange(_accountTransactions[account]);
-            }
+            _userAccounts[userId].ForEach(acc => result.AddRange(_accountTransactions[acc]));
 
             return result;
         }
@@ -55,6 +53,7 @@ namespace SimpleAccount.Repositories
                 _userAccounts[userId].Add(accountId);    
             }
             _accountTransactions[accountId] = transactions;
+            unused = false;
         }
 
         public void Delete(string userId, string accountId)
@@ -64,11 +63,18 @@ namespace SimpleAccount.Repositories
                 _userAccounts[userId].Remove(accountId);
             }
             _accountTransactions.Remove(accountId);
+            unused = false;
         }
 
         public void Update(string accountId, List<Transaction> transactions)
         {
             _accountTransactions[accountId] = transactions;
+            unused = false;
+        }
+        
+        public bool Unused()
+        {
+            return unused;
         }
     }
 }

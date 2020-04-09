@@ -13,5 +13,9 @@ namespace SimpleAccount.Repositories
         void Delete(Identifier id);
 
         void Update(Identifier id, Object item);
+        
+        // A marker to specify first use. A little hack, so that callers can check to see if they should bother 
+        // querying this repo.
+        bool Unused();
     }
 }

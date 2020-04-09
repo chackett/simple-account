@@ -1,6 +1,4 @@
-using Microsoft.Extensions.Hosting.Internal;
-
-namespace SimpleAccount.Services
+namespace SimpleAccount.Domains
 {
     public class Consent
     {

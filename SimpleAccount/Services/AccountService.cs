@@ -31,13 +31,15 @@ namespace SimpleAccount.Services
 
         public async Task<List<Account>> GetAccounts(string userId, bool invalidateCache)
         {
-            return invalidateCache ? await RefreshAccounts(userId) : _accountRepository.Get(userId);
+            return invalidateCache || _accountRepository.Unused()
+                ? await RefreshAccounts(userId)
+                : _accountRepository.Get(userId);
         }
 
         public async Task<List<Transaction>> GetTransactions(string userId, bool invalidateCache,
             DateTime from, DateTime to)
         {
-            return invalidateCache
+            return invalidateCache || _transactionRepository.Unused()
                 ? await RefreshTransactions(userId, from, to)
                 : _transactionRepository.GetAll(userId);
         }
@@ -77,8 +79,9 @@ namespace SimpleAccount.Services
                 var consent = providerConsents[account.Provider.ProviderId];
                 var transactions = await _trueLayerDataApi.GetTransactions(consent.AccessTokenRaw, account.AccountId, from, to);
                 result.AddRange(transactions);
+                _transactionRepository.Add(userId, account.AccountId, result);
             }
-            _transactionRepository.Update(userId, result);
+            
             return result;
         }
     }

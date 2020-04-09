@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SimpleAccount.Domains;
 using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Services

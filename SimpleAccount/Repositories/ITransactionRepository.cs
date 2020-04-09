@@ -19,5 +19,9 @@ namespace SimpleAccount.Repositories
         void Delete(Identifier userId, Identifier accountId);
 
         void Update(Identifier accountId, List<DTO.Response.Transaction> item);
+
+        // A marker to specify first use. A little hack, so that callers can check to see if they should bother 
+        // querying this repo.
+        bool Unused();
     }
 }

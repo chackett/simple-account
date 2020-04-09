@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SimpleAccount.Domains;
 using SimpleAccount.DTO.Response;
 using SimpleAccount.Repositories;
 using SimpleAccount.Services;

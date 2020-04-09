@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using SimpleAccount.Domains;
 using SimpleAccount.DTO.Response;
 
 namespace SimpleAccount.Services
