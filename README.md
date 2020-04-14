@@ -1,5 +1,11 @@
 # simple-account
-SimpleAccount is a simple bank account - It merges all your accounts into just one simple account. Built with C# .NET Core.
+SimpleAccount is a simple bank account - It merges all your accounts into just one simple account. Built with C# .NET Core.  
+
+This webservice has a concept of a user (userId), where accounts from various bank accounts are linked to. The API endpoints return a merged view of all the linked accounts, so transactions and accounts are all returned in single calls.
+
+There are no hardcoded values in here and multiple users can be used simultaneoulsy along with multiple accounts being linked to each user.
+
+This implementation stores everything in memory, so account consent will need to be performed for each run of the process.
 
 # Usage
 
@@ -21,6 +27,8 @@ To test the project run `dotnet test` from the repository root.
 
 ## Endpoints
 
+The refresh URL value will force a call to the upstream API (TrueLayer) if true. If false, the local store will be read, as long as data has previously been put there.
+
 Get authorisation link, to add a bank account.  
 GET `http://127.0.0.1:3000/consent/authorise?userId=demoUser`
 
@@ -28,7 +36,7 @@ Get linked accounts, set refresh to will force a new call to TrueLayer API, inst
 GET `http://localhost:3000/account/accounts?userId=demoUser&refresh=false`
 
 Get transactions for specified account. AccountId can be retrieved from accounts endpoint response.  
-GET `http://localhost:3000/account/transactions?accountId=##ACCOUNT-ID##&refresh=false&userId=demoUser`
+GET `http://localhost:3000/account/transactions?userId=demoUser&refresh=false`
 
 Get a sevenday summary of expenditure. Summarrises expense by merchant name.  
 GET `http://localhost:3000/analytics/sevendaysummary?userId=demoUser&refresh=false`
