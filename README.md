@@ -11,8 +11,13 @@ SimpleAccount is a simple bank account - It merges all your accounts into just o
 Ensure callback URL is specified in Truelyer console also.
 
 ## Build & Run
-From `SimpleAccount` directory.  
+From `SimpleAccount` directory, run:  
 `docker build -t "simpleaccount:latest" . && docker run -p 3000:3000 simpleaccount`
+
+## Testing
+Some unit tests have been written. Controllers are tested to cover typical use cases and the services tested to cover atypical use cases.  
+  
+To test the project run `dotnet test` from the repository root.
 
 ## Endpoints
 

@@ -34,7 +34,7 @@ namespace SimpleAccount.Services
             return $"{_authorisationUrl}&state={state}";
         }
 
-        public async Task<TrueLayerAccessToken> GetAccessToken(string oneTimeCode, string state)
+        public async Task<TrueLayerAccessToken> GetAccessTokenAsync(string oneTimeCode, string state)
         {
             var requestBody = new Dictionary<string, string>
             {
@@ -59,7 +59,7 @@ namespace SimpleAccount.Services
             return JsonSerializer.Deserialize<TrueLayerAccessToken>(responseBody, options);
         }
 
-        public async Task<List<Account>> GetAccounts(string accessToken)
+        public async Task<List<Account>> GetAccountsAsync(string accessToken)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
@@ -81,7 +81,7 @@ namespace SimpleAccount.Services
             return resp.Accounts.ToList();
         }
         
-        public async Task<List<Transaction>> GetTransactions(string accessToken, string accountId, DateTime from,
+        public async Task<List<Transaction>> GetTransactionsAsync(string accessToken, string accountId, DateTime from,
             DateTime to)
         {
             var client = new HttpClient();

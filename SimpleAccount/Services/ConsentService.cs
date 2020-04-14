@@ -29,7 +29,7 @@ namespace SimpleAccount.Services
 
         public async Task<Consent> CallbackAsync(string code, string state)
         {
-            var tlToken = await _trueLayerDataApi.GetAccessToken(code, state);
+            var tlToken = await _trueLayerDataApi.GetAccessTokenAsync(code, state);
 
             var jwtHandler = new JwtSecurityTokenHandler();
             var atJwt = jwtHandler.ReadJwtToken(tlToken.AccessToken);

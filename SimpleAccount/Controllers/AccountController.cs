@@ -13,9 +13,9 @@ namespace SimpleAccount.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private readonly ILogger<AnalyticsController> _logger;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(ILogger<AnalyticsController> logger, IAccountService accountService)
+        public AccountController(ILogger<AccountController> logger, IAccountService accountService)
         {
             _logger = logger;
             _accountService = accountService;
@@ -26,7 +26,7 @@ namespace SimpleAccount.Controllers
         {
             // This use of userId as an argument, and being used for state is questionable and requires further
             // review but it serves it's purpose to avoid having to hard code users.
-            return await _accountService.GetAccounts(userId, refresh);
+            return await _accountService.GetAccountsAsync(userId, refresh);
         }
 
         [HttpGet("[action]", Name = "Account_Get+Transactions")]
@@ -36,7 +36,7 @@ namespace SimpleAccount.Controllers
             var to = DateTime.UtcNow;
             var from = to.AddMonths(-3);
 
-            return await _accountService.GetTransactions(userId, refresh, from, to);
+            return await _accountService.GetTransactionsAsync(userId, refresh, from, to);
         }
     }
 }

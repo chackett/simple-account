@@ -18,13 +18,9 @@ namespace SimpleAccount.Services
         {
             /* This function is a bit unwieldy, but I guess reporting usually is - needs a review */
             
-            var accounts = await _accountService.GetAccounts(userId, invalidateCache);
+            var accounts = await _accountService.GetAccountsAsync(userId, invalidateCache);
 
-            var transactions = new List<Transaction>();
-
-            foreach (var account in accounts)
-                transactions.AddRange(
-                    await _accountService.GetTransactions(userId, invalidateCache, from, to));
+            var transactions = await _accountService.GetTransactionsAsync(userId, invalidateCache, from, to);
 
             var values = new Dictionary<string, float>();
 

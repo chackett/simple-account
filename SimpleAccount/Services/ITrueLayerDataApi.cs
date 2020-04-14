@@ -16,9 +16,9 @@ namespace SimpleAccount.Services
 
         public string AuthorisationUrl(string state);
 
-        Task<TrueLayerAccessToken> GetAccessToken(string oneTimeCode, string state);
+        Task<TrueLayerAccessToken> GetAccessTokenAsync(string oneTimeCode, string state);
 
-        Task<List<Account>> GetAccounts(string accessToken);
-        Task<List<Transaction>> GetTransactions(string accessToken, string accountId, DateTime from, DateTime to);
+        Task<List<Account>> GetAccountsAsync(string accessToken);
+        Task<List<Transaction>> GetTransactionsAsync(string accessToken, string accountId, DateTime from, DateTime to);
     }
 }

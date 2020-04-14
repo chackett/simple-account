@@ -12,9 +12,9 @@ namespace SimpleAccount.Services
          * just return summary objects, to improve efficiency. This is fine for task at hand.
          */
 
-        Task<List<Account>> GetAccounts(string userId, bool invalidateCache);
+        Task<List<Account>> GetAccountsAsync(string userId, bool invalidateCache);
 
-        Task<List<Transaction>> GetTransactions(string userId, bool invalidateCache, DateTime from,
+        Task<List<Transaction>> GetTransactionsAsync(string userId, bool invalidateCache, DateTime from,
             DateTime to);
     }
 }
